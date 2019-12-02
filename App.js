@@ -11,6 +11,7 @@ import {StyleSheet, View, FlatList, Switch, Text} from 'react-native';
 import MapView, {Geojson, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import GeoJsonGeometriesLookup from 'geojson-geometries-lookup';
 
+// GeoJSON for all countries: https://datahub.io/core/geo-ne-admin1
 import data from './vietnam.json';
 
 const glookup = new GeoJsonGeometriesLookup(data);
