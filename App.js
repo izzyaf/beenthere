@@ -44,6 +44,21 @@ const customMapStyle = [
     ],
   },
   {
+    featureType: 'administrative.country',
+    elementType: 'geometry.stroke',
+    stylers: [
+      {
+        color: '#99a1ab',
+      },
+      {
+        weight: '1.00',
+      },
+      {
+        gamma: '1.00',
+      },
+    ],
+  },
+  {
     featureType: 'administrative.province',
     elementType: 'geometry',
     stylers: [
@@ -75,7 +90,7 @@ const customMapStyle = [
     elementType: 'labels',
     stylers: [
       {
-        visibility: 'simplified',
+        visibility: 'off',
       },
     ],
   },
@@ -112,6 +127,15 @@ const customMapStyle = [
     stylers: [
       {
         visibility: 'on',
+      },
+    ],
+  },
+  {
+    featureType: 'landscape',
+    elementType: 'geometry.fill',
+    stylers: [
+      {
+        color: '#e6edf3',
       },
     ],
   },
@@ -195,6 +219,15 @@ const customMapStyle = [
   },
   {
     featureType: 'road',
+    elementType: 'geometry',
+    stylers: [
+      {
+        visibility: 'off',
+      },
+    ],
+  },
+  {
+    featureType: 'road',
     elementType: 'labels',
     stylers: [
       {
@@ -207,7 +240,7 @@ const customMapStyle = [
     elementType: 'all',
     stylers: [
       {
-        visibility: 'simplified',
+        visibility: 'off',
       },
     ],
   },
@@ -222,7 +255,25 @@ const customMapStyle = [
   },
   {
     featureType: 'road.arterial',
+    elementType: 'all',
+    stylers: [
+      {
+        visibility: 'off',
+      },
+    ],
+  },
+  {
+    featureType: 'road.arterial',
     elementType: 'labels.icon',
+    stylers: [
+      {
+        visibility: 'off',
+      },
+    ],
+  },
+  {
+    featureType: 'road.local',
+    elementType: 'all',
     stylers: [
       {
         visibility: 'off',
@@ -265,6 +316,18 @@ const customMapStyle = [
     stylers: [
       {
         visibility: 'on',
+      },
+      {
+        color: '#9ca7b8',
+      },
+    ],
+  },
+  {
+    featureType: 'water',
+    elementType: 'labels',
+    stylers: [
+      {
+        visibility: 'off',
       },
     ],
   },
@@ -345,7 +408,10 @@ const App = () => {
                 />
               );
             })}
+            <Geojson geojson={data} strokeColor="#99a1ab" fillColor="#FFF" />
             <Geojson
+              strokeWidth={0}
+              fillColor="#37a2fa"
               geojson={{
                 features: highlighted,
               }}
