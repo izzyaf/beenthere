@@ -6,42 +6,129 @@
  * @flow
  */
 
-import React from 'react';
-import {StyleSheet, View} from 'react-native';
-
+import React, {useState, useEffect} from 'react';
+import {StyleSheet, View, FlatList, Switch, Text} from 'react-native';
 import MapView, {Geojson, PROVIDER_GOOGLE} from 'react-native-maps';
+import GeoJsonGeometriesLookup from 'geojson-geometries-lookup';
 
 import data from './vietnam.json';
 
-const styles = StyleSheet.create({
-  container: {
-    ...StyleSheet.absoluteFillObject,
-    height: 400,
-    width: 400,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
+const glookup = new GeoJsonGeometriesLookup(data);
+
+const places = [
+  {
+    key: '1',
+    name: 'Văn Miếu',
+    long: 105.83578487,
+    lat: 21.02893885,
   },
-  map: {
-    ...StyleSheet.absoluteFillObject,
+  {
+    key: '2',
+    name: 'Dinh Độc lập',
+    long: 106.69547703,
+    lat: 10.77716625,
   },
-});
+];
 
 const App = () => {
+  const [selected, setSelected] = useState([]);
+  const [highlighted, setHighlighted] = useState([]);
+
+  useEffect(() => {
+    const matchedAreas = places
+      .filter(place => selected.includes(place.key))
+      .map(place => {
+        return glookup.getContainers({
+          type: 'Point',
+          coordinates: [place.long, place.lat],
+        });
+      });
+
+    const joined = matchedAreas.reduce((total, area) => {
+      const {features} = area;
+
+      return total.concat(features);
+    }, []);
+
+    setHighlighted(joined);
+  }, [selected]);
   return (
     <>
-      <View style={styles.container}>
-        <MapView
-          provider={PROVIDER_GOOGLE} // remove if not using Google Maps
-          style={styles.map}
-          mapType="standard"
-          region={{
-            latitude: 14.0583,
-            longitude: 108.2772,
-            latitudeDelta: 10,
-            longitudeDelta: 3,
+      <View
+        style={{
+          flex: 1,
+          flexDirection: 'column',
+        }}>
+        <View
+          style={{
+            height: 660,
+            width: 400,
           }}>
-          <Geojson geojson={data} />
-        </MapView>
+          <MapView
+            provider={PROVIDER_GOOGLE} // remove if not using Google Maps
+            style={{
+              ...StyleSheet.absoluteFillObject,
+            }}
+            customMapStyle={[
+              {
+                featureType: 'poi',
+                stylers: [
+                  {
+                    visibility: 'off',
+                  },
+                ],
+              },
+              {
+                featureType: 'road',
+                stylers: [
+                  {
+                    visibility: 'off',
+                  },
+                ],
+              },
+              {
+                featureType: 'transit',
+                stylers: [
+                  {
+                    visibility: 'off',
+                  },
+                ],
+              },
+            ]}
+            mapType="standard"
+            region={{
+              latitude: 15.8,
+              longitude: 106,
+              latitudeDelta: 16,
+              longitudeDelta: 10,
+            }}>
+            <Geojson
+              geojson={{
+                features: highlighted,
+              }}
+            />
+          </MapView>
+        </View>
+        <View>
+          <FlatList
+            data={places}
+            renderItem={({item, index, separators}) => (
+              <>
+                <Text>{item.name}</Text>
+                <Switch
+                  value={selected.includes(item.key)}
+                  onValueChange={enabled => {
+                    if (enabled) {
+                      return setSelected([...selected, item.key]);
+                    }
+
+                    return setSelected(selected.filter(s => s !== item.key));
+                  }}
+                />
+              </>
+            )}
+          />
+        </View>
       </View>
     </>
   );
