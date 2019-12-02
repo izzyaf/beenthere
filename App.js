@@ -8,7 +8,7 @@
 
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, FlatList, Switch, Text} from 'react-native';
-import MapView, {Geojson, PROVIDER_GOOGLE} from 'react-native-maps';
+import MapView, {Geojson, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import GeoJsonGeometriesLookup from 'geojson-geometries-lookup';
 
 import data from './vietnam.json';
@@ -102,6 +102,18 @@ const App = () => {
               latitudeDelta: 16,
               longitudeDelta: 10,
             }}>
+            {places.map(place => {
+              return (
+                <Marker
+                  key={`marker-${place.key}`}
+                  coordinate={{
+                    latitude: place.lat,
+                    longitude: place.long,
+                  }}
+                  title={place.name}
+                />
+              );
+            })}
             <Geojson
               geojson={{
                 features: highlighted,
